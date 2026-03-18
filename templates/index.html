@@ -2,84 +2,95 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Visual AI Testing Tool</title>
+    <title>QAMS AI Testing Tool</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #0f0f0f; color: #eee; min-height: 100vh; }
-        header { background: #1a1a2e; padding: 20px; text-align: center; border-bottom: 2px solid #00d4ff; }
-        header h1 { color: #00d4ff; font-size: 28px; }
-        header p { color: #888; margin-top: 5px; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .card { background: #1a1a1a; border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid #333; }
-        .card h2 { color: #00d4ff; margin-bottom: 20px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #aaa; font-size: 14px; }
-        input[type=text] { width: 100%; padding: 12px; background: #111; border: 1px solid #444; border-radius: 8px; color: #eee; font-size: 14px; }
-        input[type=file] { width: 100%; padding: 12px; background: #111; border: 1px solid #444; border-radius: 8px; color: #aaa; font-size: 14px; }
-        button { width: 100%; padding: 14px; background: #00d4ff; color: #000; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #00b8d9; }
-        button:disabled { background: #333; color: #666; cursor: not-allowed; }
-        .result { background: #111; border-radius: 10px; padding: 20px; margin-top: 20px; display: none; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; }
+        header { background: #ffffff; padding: 24px 40px; border-bottom: 3px solid #3b82f6; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .header-inner { max-width: 960px; margin: 0 auto; }
+        header h1 { color: #1e3a8a; font-size: 26px; font-weight: 700; letter-spacing: 0.5px; }
+        header p { color: #64748b; margin-top: 4px; font-size: 14px; }
+        .container { max-width: 960px; margin: 40px auto; padding: 0 24px; }
+        .card { background: #ffffff; border-radius: 12px; padding: 32px; margin-bottom: 28px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .card h2 { color: #1e3a8a; margin-bottom: 22px; font-size: 18px; font-weight: 600; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; color: #475569; font-size: 13px; font-weight: 500; }
+        input[type=text] { width: 100%; padding: 11px 14px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; color: #1a202c; font-size: 14px; transition: border 0.2s; }
+        input[type=text]:focus { outline: none; border-color: #3b82f6; background: #fff; }
+        input[type=file] { width: 100%; padding: 11px 14px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; color: #475569; font-size: 14px; }
+        button { width: 100%; padding: 13px; background: #1e3a8a; color: #ffffff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; letter-spacing: 0.3px; }
+        button:hover { background: #1e40af; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; }
+        .result { background: #f8fafc; border-radius: 10px; padding: 20px; margin-top: 20px; display: none; border: 1px solid #e2e8f0; }
         .result.show { display: block; }
-        .images { display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+        .images { display: flex; gap: 14px; margin: 16px 0; flex-wrap: wrap; }
         .img-box { flex: 1; min-width: 200px; text-align: center; }
-        .img-box img { width: 100%; border-radius: 8px; border: 1px solid #333; }
-        .img-box p { color: #aaa; margin: 8px 0; font-size: 13px; }
-        .badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-weight: bold; font-size: 13px; margin-right: 8px; }
-        .badge.bug { background: #ff4444; color: #fff; }
-        .badge.ok { background: #00cc44; color: #000; }
-        .badge.critical { background: #ff4444; color: #fff; }
-        .badge.major { background: #ff8800; color: #000; }
-        .badge.minor { background: #ffcc00; color: #000; }
-        .badge.none { background: #00cc44; color: #000; }
-        .ai-box { background: #0a1628; border-radius: 8px; padding: 15px; margin-top: 15px; border-left: 4px solid #00d4ff; }
-        .ai-box h4 { color: #00d4ff; margin-bottom: 10px; }
-        .ai-box p { margin: 8px 0; line-height: 1.6; font-size: 14px; }
-        .loading { text-align: center; padding: 20px; color: #00d4ff; display: none; }
+        .img-box img { width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+        .img-box p { color: #64748b; margin: 8px 0; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; margin-right: 8px; }
+        .badge.bug { background: #fee2e2; color: #dc2626; }
+        .badge.ok { background: #dcfce7; color: #16a34a; }
+        .badge.critical { background: #fee2e2; color: #dc2626; }
+        .badge.major { background: #ffedd5; color: #ea580c; }
+        .badge.minor { background: #fef9c3; color: #ca8a04; }
+        .badge.none { background: #dcfce7; color: #16a34a; }
+        .ai-box { background: #eff6ff; border-radius: 8px; padding: 18px; margin-top: 16px; border-left: 4px solid #3b82f6; }
+        .ai-box h4 { color: #1e3a8a; margin-bottom: 12px; font-size: 14px; font-weight: 600; }
+        .ai-box p { margin: 8px 0; line-height: 1.6; font-size: 13px; color: #334155; }
+        .loading { text-align: center; padding: 20px; color: #3b82f6; display: none; font-size: 14px; }
         .loading.show { display: block; }
-        .diff-info { display: flex; gap: 15px; align-items: center; margin: 10px 0; flex-wrap: wrap; }
-        .report-link { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #1a1a2e; color: #00d4ff; border-radius: 8px; text-decoration: none; border: 1px solid #00d4ff; }
+        .diff-info { display: flex; gap: 12px; align-items: center; margin: 10px 0; flex-wrap: wrap; }
+        .diff-info span { font-size: 13px; color: #475569; }
+        .report-link { display: inline-block; margin-top: 14px; padding: 9px 18px; background: #eff6ff; color: #1e3a8a; border-radius: 8px; text-decoration: none; border: 1px solid #bfdbfe; font-size: 13px; font-weight: 500; }
+        .report-link:hover { background: #dbeafe; }
+        footer { text-align: center; padding: 24px; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; margin-top: 20px; background: #fff; }
+        footer span { color: #1e3a8a; font-weight: 600; }
     </style>
 </head>
 <body>
     <header>
-        <h1>🔍 Visual AI Testing Tool</h1>
-        <p>AI powered screenshot comparison for Robot Framework & Playwright</p>
+        <div class="header-inner">
+            <h1>QAMS AI Testing Tool</h1>
+            <p>AI powered screenshot comparison for Robot Framework & Playwright by QAMS AI</p>
+        </div>
     </header>
     <div class="container">
         <div class="card">
-            <h2>📸 Step 1: Baseline Set Karo</h2>
+            <h2>Step 1: Set Baseline</h2>
             <div class="form-group">
                 <label>Test Name</label>
                 <input type="text" id="baseline-name" placeholder="e.g. homepage, login-page" />
             </div>
             <div class="form-group">
-                <label>Baseline Image Upload Karo</label>
+                <label>Upload Baseline Image</label>
                 <input type="file" id="baseline-file" accept="image/*" />
             </div>
-            <button onclick="setBaseline()">✅ Baseline Save Karo</button>
+            <button onclick="setBaseline()">Save Baseline</button>
             <div id="baseline-result" class="result"></div>
         </div>
         <div class="card">
-            <h2>🔍 Step 2: Compare Karo</h2>
+            <h2>Step 2: Compare Screenshots</h2>
             <div class="form-group">
                 <label>Test Name (same as baseline)</label>
                 <input type="text" id="compare-name" placeholder="e.g. homepage, login-page" />
             </div>
             <div class="form-group">
-                <label>Current Screenshot Upload Karo</label>
+                <label>Upload Current Screenshot</label>
                 <input type="file" id="compare-file" accept="image/*" />
             </div>
-            <button id="compare-btn" onclick="compareImages()">🤖 AI Se Compare Karo</button>
-            <div id="compare-loading" class="loading">⏳ AI analysis chal rahi hai... thoda wait karo</div>
+            <button id="compare-btn" onclick="compareImages()">Run AI Comparison</button>
+            <div id="compare-loading" class="loading">AI analysis in progress. Please wait...</div>
             <div id="compare-result" class="result"></div>
         </div>
     </div>
+    <footer>
+        Developed by <span>Mohit Shrotriya</span> &mdash; QAMS AI Testing Tool
+    </footer>
     <script>
         async function setBaseline() {
             const name = document.getElementById('baseline-name').value.trim();
             const file = document.getElementById('baseline-file').files[0];
-            if (!name || !file) { alert('Test name aur image dono dalo!'); return; }
+            if (!name || !file) { alert('Please enter test name and select an image.'); return; }
             const fd = new FormData();
             fd.append('test_name', name);
             fd.append('image', file);
@@ -87,14 +98,14 @@
             const data = await res.json();
             const el = document.getElementById('baseline-result');
             el.innerHTML = data.success
-                ? '<p style="color:#00cc44">✅ Baseline saved: <strong>' + name + '</strong></p>'
-                : '<p style="color:#ff4444">❌ Error: ' + data.error + '</p>';
+                ? '<p style="color:#16a34a;font-weight:500">Baseline saved successfully: <strong>' + name + '</strong></p>'
+                : '<p style="color:#dc2626">Error: ' + data.error + '</p>';
             el.classList.add('show');
         }
         async function compareImages() {
             const name = document.getElementById('compare-name').value.trim();
             const file = document.getElementById('compare-file').files[0];
-            if (!name || !file) { alert('Test name aur image dono dalo!'); return; }
+            if (!name || !file) { alert('Please enter test name and select an image.'); return; }
             document.getElementById('compare-btn').disabled = true;
             document.getElementById('compare-loading').classList.add('show');
             document.getElementById('compare-result').classList.remove('show');
@@ -107,7 +118,7 @@
             document.getElementById('compare-btn').disabled = false;
             const el = document.getElementById('compare-result');
             if (!data.success) {
-                el.innerHTML = '<p style="color:#ff4444">❌ Error: ' + data.error + '</p>';
+                el.innerHTML = '<p style="color:#dc2626">Error: ' + data.error + '</p>';
                 el.classList.add('show');
                 return;
             }
@@ -115,21 +126,21 @@
             const isBug = ai.is_bug;
             const severity = (ai.severity || 'NONE').toLowerCase();
             el.innerHTML = '<div class="diff-info">' +
-                '<span>📊 Diff: <strong>' + data.diff_percentage + '%</strong></span>' +
-                '<span class="badge ' + (isBug ? 'bug' : 'ok') + '">' + (isBug ? '🐛 BUG' : '✅ PASSED') + '</span>' +
+                '<span>Difference: <strong>' + data.diff_percentage + '%</strong></span>' +
+                '<span class="badge ' + (isBug ? 'bug' : 'ok') + '">' + (isBug ? 'BUG DETECTED' : 'PASSED') + '</span>' +
                 '<span class="badge ' + severity + '">' + (ai.severity || 'NONE') + '</span>' +
                 '</div>' +
                 '<div class="images">' +
-                '<div class="img-box"><p>📸 Baseline</p><img src="' + data.baseline_url + '" /></div>' +
-                '<div class="img-box"><p>🔍 Current</p><img src="' + data.current_url + '" /></div>' +
-                '<div class="img-box"><p>🔴 Diff</p><img src="' + data.diff_url + '" /></div>' +
+                '<div class="img-box"><p>Baseline</p><img src="' + data.baseline_url + '" /></div>' +
+                '<div class="img-box"><p>Current</p><img src="' + data.current_url + '" /></div>' +
+                '<div class="img-box"><p>Diff</p><img src="' + data.diff_url + '" /></div>' +
                 '</div>' +
-                (ai.summary ? '<div class="ai-box"><h4>🤖 AI Analysis</h4>' +
+                (ai.summary ? '<div class="ai-box"><h4>AI Analysis</h4>' +
                 '<p><strong>Summary:</strong> ' + ai.summary + '</p>' +
                 '<p><strong>Details:</strong> ' + ai.details + '</p>' +
-                '<p><strong>Changed:</strong> ' + (ai.changed_elements || []).join(', ') + '</p>' +
+                '<p><strong>Changed Elements:</strong> ' + (ai.changed_elements || []).join(', ') + '</p>' +
                 '<p><strong>Recommendation:</strong> ' + ai.recommendation + '</p></div>' : '') +
-                '<a class="report-link" href="' + data.report_url + '" target="_blank">📄 Full HTML Report Dekho</a>';
+                '<a class="report-link" href="' + data.report_url + '" target="_blank">View Full HTML Report</a>';
             el.classList.add('show');
         }
     </script>
