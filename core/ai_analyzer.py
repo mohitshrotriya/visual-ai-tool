@@ -1,15 +1,12 @@
 from google import genai
-from dotenv import load_dotenv
 import os
 import json
 import re
 import base64
 
-load_dotenv()
-client = genai.Client(api_key=os.getenv('AIzaSyB2HkPrBYJo6yIC64tzkNnpM_SxUa-jtyU'))
-
-def analyze_diff(baseline_path: str, current_path: str, diff_percentage: float) -> dict:
-    """AI se pucho - ye change bug hai ya intentional?"""
+def analyze_diff(baseline_path: str, current_path: str, diff_percentage: float, api_key: str = '') -> dict:
+    key = api_key or os.getenv('GEMINI_API_KEY', '')
+    client = genai.Client(api_key=key)
 
     with open(baseline_path, "rb") as f:
         baseline_data = base64.b64encode(f.read()).decode("utf-8")
@@ -31,12 +28,11 @@ def analyze_diff(baseline_path: str, current_path: str, diff_percentage: float) 
         "changed_elements": ["list", "of", "changed", "UI", "elements"],
         "recommendation": "What developer should do"
     }}
-
     Only respond with JSON, no extra text.
     """
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-2.0-flash",
         contents=[
             prompt,
             {"inline_data": {"mime_type": "image/png", "data": baseline_data}},

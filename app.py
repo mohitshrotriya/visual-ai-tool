@@ -108,7 +108,7 @@ async def compare_api(
             if api_key:
                 os.environ["GEMINI_API_KEY"] = api_key
 
-            ai_result = analyze_diff(baseline_path, current_path, diff_pct)
+            ai_result = analyze_diff(baseline_path, current_path, diff_pct, api_key)
 
             # Bug Highlighting
             if ai_result.get("is_bug"):
