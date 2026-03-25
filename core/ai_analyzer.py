@@ -32,7 +32,7 @@ def analyze_diff(baseline_path: str, current_path: str, diff_percentage: float, 
     """
 
     response = client.models.generate_content(
-        model="gemini-1.5-flash",
+        model="gemini-2.0-flash-lite",
         contents=[
             prompt,
             {"inline_data": {"mime_type": "image/png", "data": baseline_data}},
