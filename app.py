@@ -11,6 +11,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 import os
+import numpy as np
 
 app = FastAPI(title="Visual AI Testing Tool")
 
@@ -19,8 +20,6 @@ async def home():
     return open("templates/index.html").read()
 
 def highlight_bugs(current_path: str, diff_image, test_name: str) -> str:
-    """Bug wali jagah pe red rectangle draw karo"""
-    import numpy as np
     current = Image.open(current_path).convert("RGB")
     diff_array = np.array(diff_image)
     draw = ImageDraw.Draw(current)
@@ -40,8 +39,7 @@ def highlight_bugs(current_path: str, diff_image, test_name: str) -> str:
     current.save(highlighted_path)
     return highlighted_path
 
-def log_to_sheets(sheet_id: str, sheet_name: str, test_name: str, ai_result: dict, diff_pct: float):
-    """Bug ko Google Sheet mein log karo"""
+def log_to_sheets(sheet_id, sheet_name, test_name, ai_result, diff_pct):
     try:
         creds_path = "credentials.json"
         if not os.path.exists(creds_path):
@@ -87,6 +85,9 @@ async def compare_api(
         if not baseline_exists(test_name):
             return JSONResponse({"success": False, "error": f"Baseline nahi mili: {test_name}"})
 
+        if not api_key or len(api_key) < 20:
+            return JSONResponse({"success": False, "error": "Valid API key provide karo — Change Key button dabao"})
+
         content = await image.read()
         save_current(test_name, content)
 
@@ -104,18 +105,12 @@ async def compare_api(
         sheet_logged = False
 
         if diff_pct >= DIFF_THRESHOLD:
-            # Use user's API key if provided
-            if api_key:
-                os.environ["GEMINI_API_KEY"] = api_key
-
             ai_result = analyze_diff(baseline_path, current_path, diff_pct, api_key)
 
-            # Bug Highlighting
             if ai_result.get("is_bug"):
                 highlighted_path = highlight_bugs(current_path, result["diff_image"], test_name)
                 highlighted_url = f"/images/{test_name}/highlighted.png"
 
-                # Google Sheets logging
                 if sheet_id:
                     sheet_logged = log_to_sheets(sheet_id, sheet_name, test_name, ai_result, diff_pct)
 
