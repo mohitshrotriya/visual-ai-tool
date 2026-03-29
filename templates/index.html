@@ -23,125 +23,72 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-        #api-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); position: relative; overflow: hidden; }
-        #api-screen::before { content: ''; position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(30,58,138,0.06) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-        .api-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 48px 44px; width: 100%; max-width: 480px; position: relative; z-index: 1; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+        #api-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+        .api-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 48px 44px; width: 100%; max-width: 480px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
         .api-card .logo { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--cyan); letter-spacing: 2px; margin-bottom: 28px; text-transform: uppercase; }
-        .api-card h2 { font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+        .api-card h2 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
         .api-card .subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 32px; line-height: 1.6; }
         .api-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-mid); margin-bottom: 8px; }
         .api-input-wrap { position: relative; margin-bottom: 12px; }
-        .api-input-wrap input { width: 100%; padding: 14px 48px 14px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; transition: border 0.2s; }
+        .api-input-wrap input { width: 100%; padding: 14px 48px 14px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
         .api-input-wrap input:focus { outline: none; border-color: var(--blue); }
-        .api-input-wrap input::placeholder { color: var(--text-dim); }
-        .toggle-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-dim); font-size: 16px; user-select: none; }
-        .api-hint { font-size: 12px; color: var(--text-dim); margin-bottom: 28px; }
-        .api-hint a { color: var(--cyan); text-decoration: none; }
-        .btn-start { width: 100%; padding: 14px; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
-        .btn-start:hover { background: var(--blue-dim); }
-        #api-error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
+        .toggle-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-dim); font-size: 16px; }
+        .btn-start { width: 100%; padding: 14px; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
         #main-tool { display: none; }
-        header { background: var(--surface); border-bottom: 3px solid var(--blue); padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .header-left { display: flex; align-items: center; gap: 14px; }
-        .header-logo { font-size: 22px; font-weight: 700; color: var(--blue); letter-spacing: 0.5px; }
-        .header-tag { font-size: 11px; background: #eff6ff; color: var(--blue); padding: 3px 10px; border-radius: 20px; font-weight: 600; border: 1px solid #bfdbfe; }
-        .header-right { display: flex; align-items: center; gap: 12px; }
-        .api-status { font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 6px; font-weight: 600; }
-        .api-status::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; display: inline-block; }
-        .btn-logout { font-size: 12px; color: var(--text-mid); background: var(--surface2); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-        .btn-logout:hover { color: var(--text); background: var(--border); }
+        header { background: var(--surface); border-bottom: 3px solid var(--blue); padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header-logo { font-size: 22px; font-weight: 700; color: var(--blue); }
+        .header-tag { font-size: 11px; background: #eff6ff; color: var(--blue); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
         .container { max-width: 980px; margin: 40px auto; padding: 0 24px; }
-        .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 28px; width: fit-content; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-        .tab { padding: 8px 20px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-dim); transition: all 0.2s; border: none; background: none; font-family: 'DM Sans', sans-serif; }
+        .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 28px; width: fit-content; }
+        .tab { padding: 8px 20px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; }
         .tab.active { background: var(--blue); color: #fff; }
-        .tab:hover:not(.active) { color: var(--text); background: var(--bg); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .card-title { font-size: 16px; font-weight: 700; color: var(--blue); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
-        .card-title .step-num { width: 28px; height: 28px; background: var(--blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; }
+        .card-title { font-size: 16px; font-weight: 700; color: var(--blue); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card-title .step-num { width: 28px; height: 28px; background: var(--blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; }
         .form-group { margin-bottom: 16px; }
         label { display: block; margin-bottom: 6px; color: var(--text-mid); font-size: 13px; font-weight: 500; }
-        input[type=text] { width: 100%; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; transition: border 0.2s; font-family: 'DM Sans', sans-serif; }
-        input[type=text]:focus { outline: none; border-color: var(--blue); background: #fff; }
-        input[type=file] { width: 100%; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-mid); font-size: 13px; cursor: pointer; }
-        .btn { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
+        input[type=text], input[type=file] { width: 100%; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); }
+        .btn { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
         .btn:hover { background: var(--blue-dim); }
-        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
         .result { display: none; margin-top: 20px; }
         .result.show { display: block; }
         .diff-info { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
-        .diff-pct { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: var(--text); }
+        .diff-pct { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; }
         .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
-        .badge.bug { background: #fee2e2; color: var(--red); border: 1px solid #fecaca; }
-        .badge.ok { background: #dcfce7; color: var(--green); border: 1px solid #bbf7d0; }
-        .badge.critical { background: #fee2e2; color: var(--red); border: 1px solid #fecaca; }
-        .badge.major { background: #ffedd5; color: var(--orange); border: 1px solid #fed7aa; }
-        .badge.minor { background: #fef9c3; color: var(--yellow); border: 1px solid #fef08a; }
-        .badge.none { background: #dcfce7; color: var(--green); border: 1px solid #bbf7d0; }
+        .badge.bug { background: #fee2e2; color: var(--red); }
+        .badge.ok { background: #dcfce7; color: var(--green); }
         .images { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
-        .img-box { text-align: center; }
-        .img-box p { color: var(--text-dim); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-        .img-box img { width: 100%; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .img-box img { width: 100%; border-radius: 8px; border: 1px solid var(--border); }
         .ai-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid var(--blue); border-radius: 8px; padding: 18px 20px; margin-top: 16px; }
-        .ai-box h4 { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
-        .ai-box p { margin: 8px 0; font-size: 13px; color: var(--text-mid); line-height: 1.6; }
-        .ai-box p strong { color: var(--text); }
-        .loading { display: none; text-align: center; padding: 24px; color: var(--blue); font-size: 14px; font-weight: 500; }
-        .loading.show { display: block; }
-        .report-link { display: inline-flex; align-items:center; gap: 6px; margin-top: 14px; padding: 9px 18px; background: #eff6ff; color: var(--blue); border-radius: 8px; text-decoration: none; border: 1px solid #bfdbfe; font-size: 13px; font-weight: 600; }
-        .report-link:hover { background: #dbeafe; }
+        .ai-box h4 { color: var(--blue); font-weight: 700; }
         .sheet-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 16px;
-            padding: 12px 22px;
-            background: #10b981;
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 13px;
-            box-shadow: 0 2px 6px rgba(16,185,129,0.3);
+            display: inline-flex; align-items: center; gap: 8px; margin-top: 16px;
+            padding: 12px 22px; background: #10b981; color: white; border-radius: 8px;
+            text-decoration: none; font-weight: 600; font-size: 13px;
         }
-        .sheet-btn:hover { background: #0f9f6e; transform: translateY(-1px); }
-        .sheets-info { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
-        .sheets-status { display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; margin-top: 16px; font-size: 13px; font-weight: 500; }
-        .sheets-status.connected { background: #f0fdf4; border-color: #bbf7d0; color: var(--green); }
-        .sheets-status.disconnected { color: var(--text-dim); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .dot.green { background: var(--green); }
-        .dot.gray { background: #cbd5e1; }
-        #toast { position: fixed; bottom: 28px; right: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; font-size: 13px; color: var(--text); box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; z-index: 999; max-width: 320px; font-weight: 500; }
+        .sheet-btn:hover { background: #0f9f6e; }
+        #toast { position: fixed; bottom: 28px; right: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(80px); opacity: 0; transition: all 0.3s; z-index: 999; }
         #toast.show { transform: translateY(0); opacity: 1; }
-        #toast.success { border-left: 4px solid var(--green); }
-        #toast.error { border-left: 4px solid var(--red); }
-        footer { text-align: center; padding: 24px; color: var(--text-dim); font-size: 13px; border-top: 1px solid var(--border); margin-top: 20px; background: var(--surface); }
-        footer span { color: var(--blue); font-weight: 600; }
-        @media (max-width: 640px) { .images { grid-template-columns: 1fr; } }
+        footer { text-align: center; padding: 24px; color: var(--text-dim); font-size: 13px; border-top: 1px solid var(--border); margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<!-- API KEY SCREEN -->
 <div id="api-screen">
     <div class="api-card">
         <div class="logo">QAMS / Visual AI Testing</div>
         <h2>Enter your Gemini API Key</h2>
-        <p class="subtitle">Your key is used only in this browser session and never stored on our servers.</p>
+        <p class="subtitle">Your key is used only in this browser session.</p>
         <label class="api-label">Gemini API Key</label>
         <div class="api-input-wrap">
             <input type="password" id="api-key-input" placeholder="AIzaSy..." />
             <span class="toggle-eye" onclick="toggleKey()">👁</span>
         </div>
-        <p class="api-hint">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></p>
-        <button class="btn-start" onclick="startTool()">Start Testing &rarr;</button>
-        <p id="api-error">Please enter a valid API key to continue.</p>
+        <button class="btn-start" onclick="startTool()">Start Testing →</button>
+        <p id="api-error" style="color:#dc2626; display:none; margin-top:12px;">Please enter a valid API key.</p>
     </div>
 </div>
 
-<!-- MAIN TOOL -->
 <div id="main-tool">
     <header>
         <div class="header-left">
@@ -160,11 +107,10 @@
             <button class="tab" onclick="switchTab('sheets', this)">Google Sheets</button>
         </div>
 
-        <!-- VISUAL TESTING TAB -->
         <div id="tab-test" class="tab-content active">
-            <!-- Step 1 & Step 2 same as before -->
+            <!-- Set Baseline -->
             <div class="card">
-                <div class="card-title"><span class="step-num">1</span>Set Baseline</div>
+                <div class="card-title"><span class="step-num">1</span> Set Baseline</div>
                 <div class="form-group">
                     <label>Test Name</label>
                     <input type="text" id="baseline-name" placeholder="e.g. homepage, login-page" />
@@ -177,8 +123,9 @@
                 <div id="baseline-result" class="result"></div>
             </div>
 
+            <!-- Compare -->
             <div class="card">
-                <div class="card-title"><span class="step-num">2</span>Compare Screenshots</div>
+                <div class="card-title"><span class="step-num">2</span> Compare Screenshots</div>
                 <div class="form-group">
                     <label>Test Name (same as baseline)</label>
                     <input type="text" id="compare-name" placeholder="e.g. homepage, login-page" />
@@ -193,188 +140,154 @@
             </div>
         </div>
 
-        <!-- GOOGLE SHEETS TAB (same as before) -->
+        <!-- Google Sheets Tab (optional for now) -->
         <div id="tab-sheets" class="tab-content">
-            <!-- ... purana sheets tab same rahega ... -->
             <div class="card">
                 <div class="card-title">Google Sheets Integration</div>
-                <div class="sheets-info"><p>Automatically log all detected bugs into a Google Sheet. Every bug found adds a new row with test name, severity, description, diff percentage, and timestamp.</p></div>
-                <div class="form-group">
-                    <label>Google Sheet ID</label>
-                    <input type="text" id="sheet-id" placeholder="Paste Sheet ID from URL" />
-                </div>
-                <div class="form-group">
-                    <label>Sheet Tab Name</label>
-                    <input type="text" id="sheet-name" placeholder="e.g. Bug Reports" value="Bug Reports" />
-                </div>
-                <button class="btn" onclick="saveSheetConfig()">Save Sheet Config</button>
-                <div id="sheet-status" class="sheets-status disconnected">
-                    <span class="dot gray"></span>
-                    <span>Not configured</span>
-                </div>
+                <p>Sheet functionality will work once credentials.json and Drive API are fully ready.</p>
             </div>
-            <!-- Setup Guide same -->
         </div>
     </div>
-
-    <footer>Developed by <span>Mohit Shrotriya</span> &mdash; QAMS AI Testing Tool</footer>
+    <footer>Developed by <span>Mohit Shrotriya</span> — QAMS AI Testing Tool</footer>
 </div>
 
 <div id="toast"></div>
 
 <script>
     let userApiKey = '';
-    let sheetConfig = { sheetId: '', sheetName: 'Bug Reports', enabled: false };
 
-    const savedSheet = sessionStorage.getItem('sheetConfig');
-    if (savedSheet) sheetConfig = JSON.parse(savedSheet);
-
-    function toggleKey() { 
-        const inp = document.getElementById('api-key-input'); 
-        inp.type = inp.type === 'password' ? 'text' : 'password'; 
+    function toggleKey() {
+        const inp = document.getElementById('api-key-input');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
     }
 
     function startTool() {
         const key = document.getElementById('api-key-input').value.trim();
-        if (!key || key.length < 20) { 
-            document.getElementById('api-error').style.display = 'block'; 
-            return; 
+        if (!key || key.length < 20) {
+            document.getElementById('api-error').style.display = 'block';
+            return;
         }
-        userApiKey = key; 
+        userApiKey = key;
         sessionStorage.setItem('apiKey', key);
         document.getElementById('api-screen').style.display = 'none';
         document.getElementById('main-tool').style.display = 'block';
-        if (sheetConfig.enabled) updateSheetStatus(true);
     }
 
     function logout() {
-        userApiKey = ''; 
+        userApiKey = '';
         sessionStorage.removeItem('apiKey');
         document.getElementById('api-screen').style.display = 'flex';
         document.getElementById('main-tool').style.display = 'none';
-        document.getElementById('api-key-input').value = '';
     }
 
     function switchTab(tab, el) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        el.classList.add('active'); 
+        el.classList.add('active');
         document.getElementById('tab-' + tab).classList.add('active');
     }
 
     function showToast(msg, type = 'success') {
-        const t = document.getElementById('toast'); 
-        t.textContent = msg; 
-        t.className = 'show ' + type;
-        setTimeout(() => { t.className = ''; }, 3500);
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.style.borderLeft = type === 'success' ? '4px solid #16a34a' : '4px solid #dc2626';
+        t.style.opacity = 1;
+        t.style.transform = 'translateY(0)';
+        setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateY(80px)'; }, 3500);
     }
 
-    function saveSheetConfig() { /* same as before */ 
-        const id = document.getElementById('sheet-id').value.trim();
-        const name = document.getElementById('sheet-name').value.trim() || 'Bug Reports';
-        if (!id) { showToast('Please enter a Sheet ID', 'error'); return; }
-        sheetConfig = { sheetId: id, sheetName: name, enabled: true };
-        sessionStorage.setItem('sheetConfig', JSON.stringify(sheetConfig));
-        updateSheetStatus(true); 
-        showToast('Sheet config saved!');
-    }
+    async function setBaseline() {
+        const name = document.getElementById('baseline-name').value.trim();
+        const file = document.getElementById('baseline-file').files[0];
+        const el = document.getElementById('baseline-result');
 
-    function updateSheetStatus(connected) { /* same as before */ 
-        const el = document.getElementById('sheet-status');
-        if (connected) { 
-            el.className = 'sheets-status connected'; 
-            el.innerHTML = '<span class="dot green"></span><span>Connected — bugs will be logged automatically</span>'; 
-        } else { 
-            el.className = 'sheets-status disconnected'; 
-            el.innerHTML = '<span class="dot gray"></span><span>Not configured</span>'; 
+        if (!name || !file) {
+            showToast('Test name aur image select karo', 'error');
+            el.innerHTML = '<p style="color:#dc2626;margin-top:8px">Test name aur image dono chahiye</p>';
+            el.classList.add('show');
+            return;
         }
-    }
 
-    async function setBaseline() { /* same as before */ 
-        /* ... existing setBaseline code ... */
+        const fd = new FormData();
+        fd.append('test_name', name);
+        fd.append('image', file);
+
+        const res = await fetch('/set-baseline', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (data.success) {
+            el.innerHTML = `<p style="color:#16a34a;font-weight:500;margin-top:8px">✅ Baseline saved: <strong>${name}</strong></p>`;
+            showToast('Baseline saved successfully');
+        } else {
+            el.innerHTML = `<p style="color:#dc2626;margin-top:8px">❌ ${data.error}</p>`;
+            showToast(data.error, 'error');
+        }
+        el.classList.add('show');
     }
 
     async function compareImages() {
-    const name = document.getElementById('compare-name').value.trim();
-    const file = document.getElementById('compare-file').files[0];
-    if (!name || !file) { 
-        showToast('Enter test name and select an image', 'error'); 
-        return; 
-    }
+        const name = document.getElementById('compare-name').value.trim();
+        const file = document.getElementById('compare-file').files[0];
+        if (!name || !file) {
+            showToast('Test name aur image select karo', 'error');
+            return;
+        }
 
-    document.getElementById('compare-btn').disabled = true;
-    document.getElementById('compare-loading').classList.add('show');
-    document.getElementById('compare-result').classList.remove('show');
+        document.getElementById('compare-btn').disabled = true;
+        document.getElementById('compare-loading').classList.add('show');
+        document.getElementById('compare-result').classList.remove('show');
 
-    const fd = new FormData();
-    fd.append('test_name', name);
-    fd.append('image', file);
-    fd.append('api_key', userApiKey);
+        const fd = new FormData();
+        fd.append('test_name', name);
+        fd.append('image', file);
+        fd.append('api_key', userApiKey);
 
-    const res = await fetch('/compare', { method: 'POST', body: fd });
-    const data = await res.json();
+        const res = await fetch('/compare', { method: 'POST', body: fd });
+        const data = await res.json();
 
-    document.getElementById('compare-loading').classList.remove('show');
-    document.getElementById('compare-btn').disabled = false;
+        document.getElementById('compare-loading').classList.remove('show');
+        document.getElementById('compare-btn').disabled = false;
 
-    const el = document.getElementById('compare-result');
-    if (!data.success) {
-        el.innerHTML = '<p style="color:var(--red);font-size:13px">Error: ' + data.error + '</p>';
+        const el = document.getElementById('compare-result');
+        if (!data.success) {
+            el.innerHTML = `<p style="color:#dc2626">Error: ${data.error}</p>`;
+            el.classList.add('show');
+            return;
+        }
+
+        const ai = data.ai_analysis || {};
+        const isBug = ai.is_bug || false;
+
+        let sheetButton = data.sheet_url 
+            ? `<a href="${data.sheet_url}" target="_blank" class="sheet-btn">📊 Open Bug Report Sheet</a>` 
+            : '';
+
+        el.innerHTML = `
+            <div class="diff-info">
+                <span class="diff-pct">${data.diff_percentage}%</span>
+                <span class="badge ${isBug ? 'bug' : 'ok'}">${isBug ? 'BUG DETECTED' : 'PASSED'}</span>
+                <span class="badge">${ai.severity || 'NONE'}</span>
+            </div>
+            <div class="images">
+                <div class="img-box"><p>Baseline</p><img src="${data.baseline_url}" /></div>
+                <div class="img-box"><p>Current</p><img src="${data.current_url}" /></div>
+                <div class="img-box"><p>Diff</p><img src="${data.diff_url}" /></div>
+            </div>
+            ${data.highlighted_url ? `<div style="margin-top:16px;background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:14px"><p style="color:#dc2626;font-weight:700">BUG HIGHLIGHTED</p><img src="${data.highlighted_url}" style="width:100%;border-radius:6px;border:2px solid #fca5a5" /></div>` : ''}
+            ${ai.summary ? `<div class="ai-box"><h4>AI Analysis</h4><p><strong>Summary:</strong> ${ai.summary}</p><p><strong>Details:</strong> ${ai.details}</p><p><strong>Changed Elements:</strong> ${(ai.changed_elements || []).join(', ')}</p><p><strong>Recommendation:</strong> ${ai.recommendation}</p></div>` : ''}
+            ${sheetButton}
+            <a class="report-link" href="${data.report_url}" target="_blank" style="margin-top:16px;display:inline-block">View Full HTML Report</a>
+        `;
+
         el.classList.add('show');
-        showToast('Comparison failed', 'error');
-        return;
     }
 
-    const ai = data.ai_analysis || {};
-    const isBug = ai.is_bug || false;
-    const severity = (ai.severity || 'NONE').toLowerCase();
-
-    // ←←← YE NAYA BUTTON CODE HAI
-    let sheetButton = '';
-    if (data.sheet_url) {
-        sheetButton = `
-        <a href="${data.sheet_url}" target="_blank" class="sheet-btn" style="margin-top:16px;">
-            📊 Open Bug Report Sheet
-        </a>`;
-    }
-
-    el.innerHTML =
-        '<div class="diff-info">' +
-        '<span class="diff-pct">' + data.diff_percentage + '%</span>' +
-        '<span class="badge ' + (isBug ? 'bug' : 'ok') + '">' + (isBug ? 'BUG DETECTED' : 'PASSED') + '</span>' +
-        '<span class="badge ' + severity + '">' + (ai.severity || 'NONE') + '</span>' +
-        '</div>' +
-        '<div class="images">' +
-        '<div class="img-box"><p>Baseline</p><img src="' + data.baseline_url + '" /></div>' +
-        '<div class="img-box"><p>Current</p><img src="' + data.current_url + '" /></div>' +
-        '<div class="img-box"><p>Diff</p><img src="' + data.diff_url + '" /></div>' +
-        '</div>' +
-        (data.highlighted_url ? '<div style="margin-top:16px;background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:14px"><p style="color:var(--red);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">BUG HIGHLIGHTED</p><img src="' + data.highlighted_url + '" style="width:100%;border-radius:6px;border:2px solid #fca5a5" /></div>' : '') +
-        (ai.summary ? '<div class="ai-box"><h4>AI Analysis</h4>' +
-        '<p><strong>Summary:</strong> ' + ai.summary + '</p>' +
-        '<p><strong>Details:</strong> ' + ai.details + '</p>' +
-        '<p><strong>Changed Elements:</strong> ' + (ai.changed_elements || []).join(', ') + '</p>' +
-        '<p><strong>Recommendation:</strong> ' + ai.recommendation + '</p></div>' : '') +
-        sheetButton +   // ← yeh line important hai
-        '<a class="report-link" href="' + data.report_url + '" target="_blank">View Full HTML Report</a>';
-
-    el.classList.add('show');
-
-    if (isBug) showToast('Bug detected: ' + (ai.severity || '') + ' — ' + (ai.summary || ''), 'error');
-    else showToast('No bugs detected — test passed!');
-}
-
-    // Auto login if key saved
+    // Auto login on refresh
     const saved = sessionStorage.getItem('apiKey');
     if (saved) {
         userApiKey = saved;
         document.getElementById('api-screen').style.display = 'none';
         document.getElementById('main-tool').style.display = 'block';
-        if (sheetConfig.enabled) updateSheetStatus(true);
-    }
-    if (sheetConfig.sheetId) {
-        document.getElementById('sheet-id').value = sheetConfig.sheetId;
-        document.getElementById('sheet-name').value = sheetConfig.sheetName;
     }
 </script>
 </body>
