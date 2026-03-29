@@ -15,9 +15,11 @@ import numpy as np
 
 app = FastAPI(title="Visual AI Testing Tool")
 
+
 @app.get("/", response_class=HTMLResponse)
 async def home():
     return open("templates/index.html").read()
+
 
 def highlight_bugs(current_path: str, diff_image, test_name: str) -> str:
     current = Image.open(current_path).convert("RGB")
@@ -39,30 +41,54 @@ def highlight_bugs(current_path: str, diff_image, test_name: str) -> str:
     current.save(highlighted_path)
     return highlighted_path
 
-def log_to_sheets(sheet_id, sheet_name, test_name, ai_result, diff_pct):
+
+def log_to_sheets(test_name: str, ai_result: dict, diff_pct: float) -> str:
+    """Har bug ke liye AUTOMATICALLY naya Google Sheet banaye aur URL return kare"""
     try:
         creds_path = "credentials.json"
         if not os.path.exists(creds_path):
-            return False
+            print("❌ credentials.json nahi mila")
+            return ""
+
         scopes = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
         creds = Credentials.from_service_account_file(creds_path, scopes=scopes)
         client = gspread.authorize(creds)
-        sheet = client.open_by_key(sheet_id).worksheet(sheet_name)
-        if sheet.row_count < 1 or sheet.cell(1, 1).value != "Test Name":
-            sheet.append_row(["Test Name", "Severity", "Bug Description", "Details", "Diff %", "Status", "Date"])
-        sheet.append_row([
+
+        # Naya sheet ka naam with timestamp
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+        sheet_title = f"QAMS Bug Report - {test_name} - {timestamp}"
+
+        # Naya spreadsheet create karo
+        new_sheet = client.create(title=sheet_title)
+
+        # Header aur data daalo
+        worksheet = new_sheet.sheet1
+        worksheet.update('A1', [
+            ["Test Name", "Severity", "Summary", "Details", "Changed Elements", "Diff %", "Date"]
+        ])
+
+        row = [
             test_name,
-            ai_result.get("severity", ""),
+            ai_result.get("severity", "MAJOR"),
             ai_result.get("summary", ""),
             ai_result.get("details", ""),
+            ", ".join(ai_result.get("changed_elements", [])),
             f"{diff_pct}%",
-            "Open",
             datetime.now().strftime("%d/%m/%Y %H:%M")
-        ])
-        return True
+        ]
+        worksheet.append_row(row)
+
+        # Publicly viewable bana do
+        new_sheet.share(None, perm_type='anyone', role='reader')
+
+        sheet_url = new_sheet.url
+        print(f"✅ Naya Google Sheet bana: {sheet_url}")
+        return sheet_url
+
     except Exception as e:
-        print(f"Sheets error: {e}")
-        return False
+        print(f"Sheets creation error: {e}")
+        return ""
+
 
 @app.post("/set-baseline")
 async def set_baseline_api(test_name: str = Form(...), image: UploadFile = File(...)):
@@ -73,13 +99,12 @@ async def set_baseline_api(test_name: str = Form(...), image: UploadFile = File(
     except Exception as e:
         return JSONResponse({"success": False, "error": str(e)})
 
+
 @app.post("/compare")
 async def compare_api(
     test_name: str = Form(...),
     image: UploadFile = File(...),
     api_key: str = Form(default=""),
-    sheet_id: str = Form(default=""),
-    sheet_name: str = Form(default="Bug Reports")
 ):
     try:
         if not baseline_exists(test_name):
@@ -102,7 +127,7 @@ async def compare_api(
 
         ai_result = {}
         highlighted_url = None
-        sheet_logged = False
+        sheet_url = ""                     # ← Naya variable
 
         if diff_pct >= DIFF_THRESHOLD:
             ai_result = analyze_diff(baseline_path, current_path, diff_pct, api_key)
@@ -111,8 +136,8 @@ async def compare_api(
                 highlighted_path = highlight_bugs(current_path, result["diff_image"], test_name)
                 highlighted_url = f"/images/{test_name}/highlighted.png"
 
-                if sheet_id:
-                    sheet_logged = log_to_sheets(sheet_id, sheet_name, test_name, ai_result, diff_pct)
+                # ← Naya sheet create karo
+                sheet_url = log_to_sheets(test_name, ai_result, diff_pct)
 
         report_path = generate_report([{
             "test_name": test_name,
@@ -124,6 +149,7 @@ async def compare_api(
         }])
 
         report_filename = Path(report_path).name
+
         return JSONResponse({
             "success": True,
             "diff_percentage": diff_pct,
@@ -133,10 +159,13 @@ async def compare_api(
             "diff_url": f"/images/{test_name}/diff.png",
             "highlighted_url": highlighted_url,
             "report_url": f"/reports/{report_filename}",
-            "sheet_logged": sheet_logged
+            "sheet_url": sheet_url,           # ← Naya URL return ho raha hai
+            "sheet_logged": bool(sheet_url)
         })
+
     except Exception as e:
         return JSONResponse({"success": False, "error": str(e)})
+
 
 @app.get("/images/{test_name}/{filename}")
 async def get_image(test_name: str, filename: str):
@@ -144,6 +173,7 @@ async def get_image(test_name: str, filename: str):
     if path.exists():
         return FileResponse(str(path))
     return JSONResponse({"error": "Image nahi mili"}, status_code=404)
+
 
 @app.get("/reports/{filename}")
 async def get_report(filename: str):
