@@ -181,3 +181,39 @@ async def get_report(filename: str):
     if path.exists():
         return FileResponse(str(path))
     return JSONResponse({"error": "Report nahi mili"}, status_code=404)
+
+
+@app.post("/compare-html")
+async def compare_html_api(
+    test_name: str = Form(...),
+    html1: str = Form(...),
+    html2: str = Form(...),
+    api_key: str = Form(default="")
+):
+    try:
+        if not api_key or len(api_key) < 20:
+            return JSONResponse({"success": False, "error": "Valid Gemini API key provide karo"})
+
+        from core.ai_analyzer import analyze_html_diff
+        ai_result = analyze_html_diff(html1, html2, test_name)
+
+        # Simple HTML report generate (basic)
+        report_path = generate_report([{
+            "test_name": test_name,
+            "baseline_path": None,
+            "current_path": None,
+            "diff_path": None,
+            "diff_percentage": 0,
+            "ai_analysis": ai_result
+        }])
+
+        report_filename = Path(report_path).name
+
+        return JSONResponse({
+            "success": True,
+            "ai_analysis": ai_result,
+            "report_url": f"/reports/{report_filename}"
+        })
+
+    except Exception as e:
+        return JSONResponse({"success": False, "error": str(e)})

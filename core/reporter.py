@@ -10,7 +10,7 @@ def image_to_base64(image_path: str) -> str:
         return base64.b64encode(f.read()).decode("utf-8")
 
 def generate_report(results: list) -> str:
-    """HTML report generate karo"""
+    """HTML report generate karo (HTML comparison ke liye bhi safe)"""
     Path(REPORTS_DIR).mkdir(exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     report_path = str(Path(REPORTS_DIR) / f"report_{timestamp}.html")
@@ -34,9 +34,10 @@ def generate_report(results: list) -> str:
 
         status_icon = "🐛 BUG" if is_bug else "✅ OK"
 
-        baseline_b64 = image_to_base64(r["baseline_path"]) if os.path.exists(r["baseline_path"]) else ""
-        current_b64 = image_to_base64(r["current_path"]) if os.path.exists(r["current_path"]) else ""
-        diff_b64 = image_to_base64(r["diff_path"]) if os.path.exists(r.get("diff_path", "")) else ""
+        # HTML comparison ke liye baseline/current None ho sakte hain
+        baseline_b64 = image_to_base64(r["baseline_path"]) if r.get("baseline_path") else ""
+        current_b64 = image_to_base64(r["current_path"]) if r.get("current_path") else ""
+        diff_b64 = image_to_base64(r.get("diff_path")) if r.get("diff_path") else ""
 
         rows += f"""
         <div class="test-card {'bug' if is_bug else 'pass'}">
@@ -44,21 +45,11 @@ def generate_report(results: list) -> str:
                 <h3>{r.get('test_name', 'Unknown')}</h3>
                 <span class="status">{status_icon}</span>
                 <span class="severity" style="background:{severity_color}">{severity}</span>
-                <span class="diff-pct">Diff: {r.get('diff_percentage', 0)}%</span>
             </div>
             <div class="images">
-                <div class="img-box">
-                    <p>📸 Baseline</p>
-                    <img src="data:image/png;base64,{baseline_b64}" />
-                </div>
-                <div class="img-box">
-                    <p>🔍 Current</p>
-                    <img src="data:image/png;base64,{current_b64}" />
-                </div>
-                <div class="img-box">
-                    <p>🔴 Diff</p>
-                    <img src="data:image/png;base64,{diff_b64}" />
-                </div>
+                {f'<div class="img-box"><p>📸 Baseline</p><img src="data:image/png;base64,{baseline_b64}" /></div>' if baseline_b64 else ''}
+                {f'<div class="img-box"><p>🔍 Current</p><img src="data:image/png;base64,{current_b64}" /></div>' if current_b64 else ''}
+                {f'<div class="img-box"><p>🔴 Diff</p><img src="data:image/png;base64,{diff_b64}" /></div>' if diff_b64 else ''}
             </div>
             <div class="ai-analysis">
                 <h4>🤖 AI Analysis</h4>
@@ -89,15 +80,12 @@ def generate_report(results: list) -> str:
         .test-header {{ display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }}
         .test-header h3 {{ margin: 0; color: #00d4ff; }}
         .severity {{ padding: 4px 12px; border-radius: 20px; color: #000; font-weight: bold; font-size: 12px; }}
-        .diff-pct {{ color: #aaa; font-size: 14px; }}
         .images {{ display: flex; gap: 15px; margin: 15px 0; }}
         .img-box {{ flex: 1; text-align: center; }}
         .img-box img {{ width: 100%; border-radius: 8px; border: 1px solid #333; }}
-        .img-box p {{ color: #aaa; margin: 5px 0; }}
         .ai-analysis {{ background: #111; padding: 15px; border-radius: 8px; margin-top: 15px; }}
         .ai-analysis h4 {{ color: #00d4ff; margin-top: 0; }}
         .ai-analysis p {{ margin: 8px 0; line-height: 1.5; }}
-        .timestamp {{ text-align: center; color: #555; font-size: 12px; margin-top: 30px; }}
     </style>
 </head>
 <body>
@@ -112,7 +100,7 @@ def generate_report(results: list) -> str:
 </body>
 </html>"""
 
-    with open(report_path, "w") as f:
+    with open(report_path, "w", encoding="utf-8") as f:
         f.write(html)
 
     return report_path

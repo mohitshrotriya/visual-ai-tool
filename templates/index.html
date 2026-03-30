@@ -105,7 +105,29 @@
         <div class="tabs">
             <button class="tab active" onclick="switchTab('test', this)">Visual Testing</button>
             <button class="tab" onclick="switchTab('sheets', this)">Google Sheets</button>
+            <button class="tab" onclick="switchTab('html', this)">HTML Elements</button>
         </div>
+
+        <div id="tab-html" class="tab-content">
+    <div class="card">
+        <div class="card-title"><span class="step-num">3</span> HTML Elements Comparison</div>
+        <div class="form-group">
+            <label>Test Name</label>
+            <input type="text" id="html-test-name" placeholder="e.g. login-component" />
+        </div>
+        <div class="form-group">
+            <label>HTML 1 (Baseline)</label>
+            <textarea id="html1" rows="8" style="width:100%;font-family:monospace;font-size:13px;padding:12px;border:1px solid var(--border);border-radius:8px;" placeholder="<div class='login-form'>...</div>"></textarea>
+        </div>
+        <div class="form-group">
+            <label>HTML 2 (Current)</label>
+            <textarea id="html2" rows="8" style="width:100%;font-family:monospace;font-size:13px;padding:12px;border:1px solid var(--border);border-radius:8px;" placeholder="<div class='login-form'>...</div>"></textarea>
+        </div>
+        <button class="btn" onclick="compareHTML()">Compare HTML Elements</button>
+        <div id="html-loading" class="loading">AI comparing HTML structure...</div>
+        <div id="html-result" class="result"></div>
+    </div>
+</div>
 
         <div id="tab-test" class="tab-content active">
             <!-- Set Baseline -->
@@ -289,6 +311,57 @@
         document.getElementById('api-screen').style.display = 'none';
         document.getElementById('main-tool').style.display = 'block';
     }
+
+    async function compareHTML() {
+    const name = document.getElementById('html-test-name').value.trim();
+    const html1 = document.getElementById('html1').value.trim();
+    const html2 = document.getElementById('html2').value.trim();
+
+    if (!name || !html1 || !html2) {
+        showToast('Test name aur dono HTML code daalo', 'error');
+        return;
+    }
+
+    document.getElementById('html-loading').classList.add('show');
+    document.getElementById('html-result').classList.remove('show');
+
+    const fd = new FormData();
+    fd.append('test_name', name);
+    fd.append('html1', html1);
+    fd.append('html2', html2);
+    fd.append('api_key', userApiKey);
+
+    const res = await fetch('/compare-html', { method: 'POST', body: fd });
+    const data = await res.json();
+
+    document.getElementById('html-loading').classList.remove('show');
+
+    const el = document.getElementById('html-result');
+    if (!data.success) {
+        el.innerHTML = `<p style="color:var(--red)">Error: ${data.error}</p>`;
+        el.classList.add('show');
+        return;
+    }
+
+    const ai = data.ai_analysis;
+    el.innerHTML = `
+        <div class="diff-info">
+            <span class="badge ${ai.is_bug ? 'bug' : 'ok'}">${ai.is_bug ? 'CHANGES DETECTED' : 'NO CHANGES'}</span>
+            <span class="badge">${ai.severity || 'NONE'}</span>
+        </div>
+        <div class="ai-box">
+            <h4>HTML Comparison Result</h4>
+            <p><strong>Summary:</strong> ${ai.summary}</p>
+            <p><strong>Details:</strong> ${ai.details}</p>
+            <p><strong>Same IDs:</strong> ${(ai.same_ids || []).join(', ') || 'None'}</p>
+            <p><strong>Added:</strong> ${(ai.added_elements || []).join(', ') || 'None'}</p>
+            <p><strong>Removed:</strong> ${(ai.removed_elements || []).join(', ') || 'None'}</p>
+            <p><strong>Recommendation:</strong> ${ai.recommendation}</p>
+        </div>
+        <a class="report-link" href="${data.report_url}" target="_blank">View Full HTML Report</a>
+    `;
+    el.classList.add('show');
+}
 </script>
 </body>
 </html>
