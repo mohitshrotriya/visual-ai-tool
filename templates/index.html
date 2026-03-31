@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <head>
     <meta charset="UTF-8">
-    <title>KNA TD AI Testing Tool</title>
+    <title>KNA TD Comparison Tool</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>KNA TD Comparison Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -76,7 +82,7 @@
 
 <div id="api-screen">
     <div class="api-card">
-        <div class="logo">KNA TD / Visual AI Testing</div>
+        <div class="logo">KNA TD Comparison Tool</div>
         <h2>Enter your Gemini API Key</h2>
         <p class="subtitle">Your key is used only in this browser session.</p>
         <label class="api-label">Gemini API Key</label>
@@ -92,9 +98,12 @@
 <div id="main-tool">
     <header>
         <div class="header-left">
-            <span class="header-logo">KNA TD AI Testing Tool</span>
-            <span class="header-tag">Visual AI</span>
-        </div>
+        <!-- Logo yahan lag raha hai -->
+        <img src="/static/kna-td-logo.png" 
+             alt="KNA TD Comparison AI Tool" 
+             style="height: 42px; width: auto; margin-right: 8px;">
+        <span class="header-tag">Visual AI</span>
+    </div>
         <div class="header-right">
             <span class="api-status">API Connected</span>
             <button class="btn-logout" onclick="logout()">Change Key</button>
@@ -104,7 +113,7 @@
     <div class="container">
         <div class="tabs">
             <button class="tab active" onclick="switchTab('test', this)">Visual Testing</button>
-            <button class="tab" onclick="switchTab('sheets', this)">Google Sheets</button>
+            <!-- <button class="tab" onclick="switchTab('sheets', this)">Google Sheets</button> -->
             <button class="tab" onclick="switchTab('html', this)">HTML Elements</button>
         </div>
 
@@ -164,9 +173,9 @@
 
         <!-- Google Sheets Tab (optional for now) -->
         <div id="tab-sheets" class="tab-content">
-            <div class="card">
+            <!-- <div class="card">
                 <div class="card-title">Google Sheets Integration</div>
-                <p>Sheet functionality will work once credentials.json and Drive API are fully ready.</p>
+                <p>Sheet functionality will work once credentials.json and Drive API are fully ready.</p> -->
             </div>
         </div>
     </div>

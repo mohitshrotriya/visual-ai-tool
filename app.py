@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles  
 from pathlib import Path
 from core.compare import compare_images
 from core.ai_analyzer import analyze_diff
@@ -14,6 +15,9 @@ import os
 import numpy as np
 
 app = FastAPI(title="Visual AI Testing Tool")
+
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -56,7 +60,7 @@ def log_to_sheets(test_name: str, ai_result: dict, diff_pct: float) -> str:
 
         # Naya sheet ka naam with timestamp
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-        sheet_title = f"QAMS Bug Report - {test_name} - {timestamp}"
+        sheet_title = f"KNA TD Bug Report - {test_name} - {timestamp}"
 
         # Naya spreadsheet create karo
         new_sheet = client.create(title=sheet_title)
@@ -195,9 +199,8 @@ async def compare_html_api(
             return JSONResponse({"success": False, "error": "Valid Gemini API key provide karo"})
 
         from core.ai_analyzer import analyze_html_diff
-        ai_result = analyze_html_diff(html1, html2, test_name)
+        ai_result = analyze_html_diff(html1, html2, test_name, api_key)   # ← Yeh line important hai
 
-        # Simple HTML report generate (basic)
         report_path = generate_report([{
             "test_name": test_name,
             "baseline_path": None,
